@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111827">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="عداد العطل">
+<title>عداد العطل المدرسية 26–27</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",Arial,sans-serif;background:linear-gradient(160deg,#111827,#374151);color:#fff;min-height:100vh}.wrap{max-width:600px;margin:auto;padding:28px 18px 40px}.top{text-align:center}.top h1{font-size:28px;margin:8px 0}.top p{opacity:.72;margin:0 0 24px}.card{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.12);border-radius:24px;padding:22px;margin-bottom:16px;backdrop-filter:blur(12px)}.next{font-size:15px;opacity:.75}.name{font-size:25px;font-weight:800;margin:7px 0 18px}.timer{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.box{background:rgba(0,0,0,.2);border-radius:15px;padding:12px 4px;text-align:center}.num{font-size:27px;font-weight:800}.lab{font-size:11px;opacity:.65;margin-top:3px}.list{display:grid;gap:9px}.item{display:flex;justify-content:space-between;gap:10px;align-items:center;background:rgba(255,255,255,.06);padding:13px 14px;border-radius:15px}.item b{font-size:14px}.item span{font-size:12px;opacity:.65;white-space:nowrap}.small{text-align:center;font-size:11px;opacity:.5;margin-top:18px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="top"><h1>⏳ عداد العطل المدرسية</h1><p>العام الدراسي 1448–1449هـ / 2026–2027م</p></div>
+<div class="card">
+<div class="next">الإجازة القادمة</div><div class="name" id="nextName">جاري الحساب...</div>
+<div class="timer">
+<div class="box"><div class="num" id="d">0</div><div class="lab">يوم</div></div>
+<div class="box"><div class="num" id="h">00</div><div class="lab">ساعة</div></div>
+<div class="box"><div class="num" id="m">00</div><div class="lab">دقيقة</div></div>
+<div class="box"><div class="num" id="s">00</div><div class="lab">ثانية</div></div>
+</div></div>
+<div class="card"><div class="name" style="font-size:20px">📅 جميع الإجازات</div><div class="list" id="list"></div></div>
+<div class="small">العداد يتحدث تلقائيًا كل ثانية 🇸🇦</div>
+</div>
+<script>
+const holidays=[
+["🇸🇦 اليوم الوطني","2026-09-23T00:00:00+03:00"],
+["🍂 إجازة الخريف","2026-11-20T00:00:00+03:00"],
+["🏖️ إجازة منتصف العام الدراسي","2027-01-08T00:00:00+03:00"],
+["🇸🇦 يوم التأسيس","2027-02-19T00:00:00+03:00"],
+["🌙 إجازة عيد الفطر","2027-02-26T00:00:00+03:00"],
+["🕋 إجازة عيد الأضحى","2027-05-07T00:00:00+03:00"],
+["☀️ الإجازة الصيفية","2027-06-24T00:00:00+03:00"]
+];
+function parts(ms){let x=Math.max(0,Math.floor(ms/1000));let d=Math.floor(x/86400);x%=86400;let h=Math.floor(x/3600);x%=3600;let m=Math.floor(x/60),s=x%60;return[d,h,m,s]}
+function update(){
+ const now=new Date();
+ const next=holidays.find(x=>new Date(x[1]).getTime()>now.getTime());
+ if(!next){document.getElementById("nextName").textContent="انتهت إجازات العام الدراسي";return}
+ document.getElementById("nextName").textContent=next[0];
+ const a=parts(new Date(next[1])-now);
+ document.getElementById("d").textContent=a[0];
+ document.getElementById("h").textContent=String(a[1]).padStart(2,"0");
+ document.getElementById("m").textContent=String(a[2]).padStart(2,"0");
+ document.getElementById("s").textContent=String(a[3]).padStart(2,"0");
+ document.getElementById("list").innerHTML=holidays.map(x=>{
+   const diff=new Date(x[1])-now;
+   const a=parts(diff);
+   return `<div class="item"><b>${x[0]}</b><span>${diff>0?`باقي ${a[0]} يوم`:"انتهت"}</span></div>`;
+ }).join("");
+}
+update();setInterval(update,1000);
+</script>
+</body>
+</html>
